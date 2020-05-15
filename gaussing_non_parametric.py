@@ -73,31 +73,6 @@ def predict_gp(train_x,train_y,init_state, action_traj):
         rollout_gp[t] = new_state
     return pred_gp_mean,pred_gp_variance,rollout_gp
 
-def plot_trajs(mean_trajs, variance_traj, rollout_trajs, state_traj):
-    X= np.arange(0,state_traj.shape[1]/100,state_traj.shape[1] )
-    fig,a =  plt.subplots(3,2)
-
-    a[0][0].plot(X, state_traj[0,:])
-    a[0][0].plot(X, rollout_trajs[0,:])
-    a[0][0].set_title('X Position vs time')
-    #a[0][0].legend(('Xposition', 'Yposition', 'Zposition'))
-    a[0][1].plot(X, state_traj[1,:])
-    a[0][1].plot(X, rollout_trajs[1,:])
-    a[0][1].set_title('Y Position vs time')
-
-    a[1][1].plot(X, state_traj[2,:])
-    a[1][1].plot(X, rollout_trajs[2,:])
-    a[1][1].set_title('Z Position vs time')
-
-    a[1][1].plot(X, state_traj[3,:])
-    a[1][1].plot(X, rollout_trajs[3,:])
-    a[1][1].set_title('Roll vs time')
-
-    a[2][0].plot(X, state_traj[4,:])
-    a[2][0].plot(X, rollout_trajs[4,:])
-    a[2][0].set_title('Pitch vs time')
-
-    plt.show()
 
 
 
@@ -134,9 +109,11 @@ if __name__ == '__main__':
             rollout_trajs= np.concatenate((rollout_trajs,rollout),axis=0)
 
 
+    save_data={"rollouts":rollout_trajs, "state_traj":state_traj, "DELTA_T": DELTA_T,\
+                "traj_length": TRAJECTORY_LENGTH,"num_epochs": NUM_TRAINING_EPOCHS,\
+               "kernel_length_scales": kernel_length_scales,\
+               "kernel_scale_factors":kernel_scale_factors,\
+                "noise_sigmas":noise_sigmas}
+    np.save('save_data.npy',save_data)
 
-
-    np.save('rollout_trajs.npy',rollout_trajs)
-    np.save('state_trajs.npy',state_traj)
-    #plot_trajs(rollout_trajs, state_traj)
 

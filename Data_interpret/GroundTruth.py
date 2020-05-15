@@ -121,7 +121,6 @@ if __name__ == '__main__':
     object = ReadMat(file_to_open)
     sampling= 100
     state_traj, action_traj= object.sampled_mocap_data(sampling)
-    print(state_traj.shape, action_traj.shape)
     #
     roll, pitch, yaw = object.angles()
     xpos, ypos, zpos= object.positions()
@@ -132,10 +131,6 @@ if __name__ == '__main__':
     # vis.plotter({"vel": (Z_param, roll_param, pitch_param)})
     #vis.plotter({"pos": (state_traj[0,:],state_traj[1,:],state_traj[2,:]), "vel":(state_traj[3,:],state_traj[4,:],state_traj[5,:]), "angles": (state_traj[6,:],state_traj[7,:],state_traj[8,:])})
     #vis.show_plot()
-
-
-
-def plotting_midprogress_report(state_traj, action_traj, roll, pitch, xpos, ypos, zpos, xvel ,yvel, zvel):
     import matplotlib.pyplot as plt
     fig,a =  plt.subplots(2,2)
 
@@ -146,34 +141,43 @@ def plotting_midprogress_report(state_traj, action_traj, roll, pitch, xpos, ypos
     a[0][0].plot(X, ypos)
     a[0][0].plot(X, zpos)
     a[0][0].set_title('Position vs time (N=55k)')
-    #a[0][0].legend(('Xposition', 'Yposition', 'Zposition'))
+    a[0][0].legend(('Xposition', 'Yposition', 'Zposition'))
     a[0][1].plot(Y, state_traj[0,:])
     a[0][1].plot(Y, state_traj[1,:])
     a[0][1].plot(Y, state_traj[2,:])
     a[0][1].set_title('Sampled Position vs time (N=553)')
+    a[0][1].legend(('Xposition', 'Yposition', 'Zposition'))
+
     a[1][0].plot(X, xvel)
     a[1][0].plot(X, yvel)
     a[1][0].plot(X, zvel)
     a[1][0].set_title('Velocity vs time (N=55k)')
+    a[1][0].legend(('Xvel', 'Yvel', 'Zvel'))
     a[1][1].plot(Y, state_traj[3,:])
     a[1][1].plot(Y, state_traj[4,:])
     a[1][1].plot(Y, state_traj[5,:])
     a[1][1].set_title('Sampled velocity vs time (N=553)')
+    a[1][1].legend(('Xvel', 'Yvel', 'Zvel'))
 
     fig,b =  plt.subplots(2,2)
     b[0][0].plot(X, roll)
     b[0][0].plot(X, pitch)
     b[0][0].set_title('Attitude vs time (N=55k)')
+    b[0][0].legend(('roll', 'Pitch'))
     b[0][1].plot(Y, state_traj[6,:])
     b[0][1].plot(Y, state_traj[7,:])
     b[0][1].set_title('Sampled attitude vs time (N=553)')
+    b[0][1].legend(('roll', 'Pitch'))
+
     b[1][0].plot(X, Z_param)
     b[1][0].plot(X, roll_param)
     b[1][0].plot(X, pitch_param)
     b[1][0].set_title('actions vs time (N=55k)')
+    b[1][0].legend(('Z_acc', 'Roll_acc', 'Pitch_acc'))
     b[1][1].plot(Y, action_traj[0,:])
     b[1][1].plot(Y, action_traj[1,:])
     b[1][1].plot(Y, action_traj[2,:])
     b[1][1].set_title('Sampled actions vs time (N=553)')
+    b[1][1].legend(('Z_acc', 'Roll_acc', 'Pitch_acc'))
     plt.show()
 
