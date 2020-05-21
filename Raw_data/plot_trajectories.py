@@ -42,7 +42,7 @@ if __name__== "__main__":
     for i in range(int(trajectory_size/DELTA_T),total_points,int(trajectory_size/DELTA_T)):
         b[0][0].plot(X[prev:i], state_traj[3,prev:i],'b')
         b[0][0].plot(X[prev:i], rollout_trajs[3,prev:i],'g')
-        b[0][0].set_title('X Velocity vs time')
+        b[0][0].set_title('X Velocfity vs time')
         #a[0][0].legend(('Xposition', 'Yposition', 'Zposition'))
         b[0][1].plot(X[prev:i], state_traj[4,prev:i],'b')
         b[0][1].plot(X[prev:i], rollout_trajs[4,prev:i],'g')
