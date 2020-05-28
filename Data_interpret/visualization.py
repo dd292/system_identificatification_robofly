@@ -18,7 +18,7 @@ class TrajectoryVisualize():
         plt.plot(X, xpos)
         plt.plot(X, ypos)
         plt.plot(X, zpos)
-        plt.legend(('Xposition', 'Yposition', 'Zposition'))
+        plt.legend(('Roll_acc', 'pitch_acc', 'Z'))
         #plt.ylim(top=1, bottom=-1)
 
 
