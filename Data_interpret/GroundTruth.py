@@ -85,9 +85,9 @@ class ReadMat:
         filtered_xpos =signal.filtfilt(b,a,xpos)
         filtered_ypos =signal.filtfilt(b,a,ypos)
         filtered_zpos =signal.filtfilt(b,a,zpos)
-        xvel= np.gradient(filtered_xpos)
-        yvel= np.gradient(filtered_ypos)
-        zvel= np.gradient(filtered_zpos)
+        xvel= np.gradient(filtered_xpos,1/10000)
+        yvel= np.gradient(filtered_ypos,1/10000)
+        zvel= np.gradient(filtered_zpos,1/10000)
         R= self.get_rotation_matrix()
         X_vel_body = np.zeros((xvel.shape))
         Y_vel_body = np.zeros((xvel.shape))
@@ -112,6 +112,11 @@ class ReadMat:
         xvel,yvel,zvel, omega1,omega2,omega3 = self.vel(xpos, ypos, zpos)
         return np.array([xvel,yvel,zvel, roll, pitch, yaw, omega1,omega2,omega3])
 
+    def get_states_world_dynamics(self):
+        roll, pitch, yaw = self.angles()
+        xpos, ypos, zpos= self.positions()
+        xvel,yvel,zvel, omega1,omega2,omega3 = self.vel(xpos, ypos, zpos)
+        return np.array([roll,pitch,yaw,omega1, omega2, omega3, xpos ,ypos,zpos, xvel,yvel,zvel])
     def get_actions(self):
         initial_amplitude= (self.params[0][0][5][0][0][2]).item()
         Z_param= self.raw_data[:,6]-initial_amplitude
@@ -122,6 +127,17 @@ class ReadMat:
         
     def sampled_mocap_data(self, samples_steps):
         states_trajectory= self.get_states() # number of state X number of training examples
+        action_trajectory= self.get_actions() # number of actions X number of training examples
+        new_action_trajectory= np.zeros((action_trajectory.shape[0],int(action_trajectory.shape[1]/samples_steps)))
+        new_trajectory= np.zeros((states_trajectory.shape[0],int(states_trajectory.shape[1]/samples_steps)))
+        for i in range(int(states_trajectory.shape[1]/samples_steps)):
+            new_trajectory[:,i] =np.sum(states_trajectory[:,i*samples_steps:(i+1)*samples_steps],axis=1)/samples_steps
+            new_action_trajectory[:,i] =np.sum(action_trajectory[:,i*samples_steps:(i+1)*samples_steps],axis=1)/samples_steps
+
+        return new_trajectory,new_action_trajectory
+
+    def sampled_mocap_data_dynamics_world(self, samples_steps):
+        states_trajectory= self.get_states_world_dynamics() # number of state X number of training examples
         action_trajectory= self.get_actions() # number of actions X number of training examples
         new_action_trajectory= np.zeros((action_trajectory.shape[0],int(action_trajectory.shape[1]/samples_steps)))
         new_trajectory= np.zeros((states_trajectory.shape[0],int(states_trajectory.shape[1]/samples_steps)))
