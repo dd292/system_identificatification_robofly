@@ -12,9 +12,9 @@ class GP:
         self.DELTA_T =delta_t
         self.TRAJECTORY_LENGTH = traj_length#seconds
         self.NUM_TRAINING_EPOCHS= num_epoch
-        self.kernel_length_scales = np.ones((12,9))*2
-        self.kernel_scale_factors = np.ones((9,1))*2
-        self.noise_sigmas = np.array([.05,.05,.05,.05,.05,.05,.05,.05,.05])*0.5
+        self.kernel_length_scales = np.ones((12,9))*1.9
+        self.kernel_scale_factors = np.ones((9,1))*0.01
+        self.noise_sigmas = np.array([.05,.05,.05,.05,.05,.05,.05,.05,.05])*0.05
         self.inv_value =None
         self.K = None
     def make_training_data(self,epoch, state_traj, action_traj):

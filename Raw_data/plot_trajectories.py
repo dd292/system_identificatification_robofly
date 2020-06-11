@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import information_scores
 
 
 
@@ -13,6 +14,15 @@ if __name__== "__main__":
     total_points = rollout_trajs.shape[1]
 
     state_traj= state_traj[:,:rollout_trajs.shape[1]]
+    Kl = 0
+    mse= 0
+    for i in range(state_traj.shape[0]):
+        Kl+= information_scores.KL_divergence(state_traj[i,:],rollout_trajs[i,:])
+        mse+= information_scores.MSE(state_traj[i, :], rollout_trajs[i, :],)
+
+    print(Kl, mse)
+
+
     X= np.linspace(0,state_traj.shape[1]*DELTA_T,state_traj.shape[1] )
     fig,a =  plt.subplots(3,2)
     prev=0
