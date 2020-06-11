@@ -15,6 +15,8 @@ class GP:
         self.kernel_length_scales = np.ones((12,9))*2
         self.kernel_scale_factors = np.ones((9,1))*2
         self.noise_sigmas = np.array([.05,.05,.05,.05,.05,.05,.05,.05,.05])*0.5
+        self.inv_value =None
+        self.K = None
     def make_training_data(self,epoch, state_traj, action_traj):
         start_point= int(epoch*self.TRAJECTORY_LENGTH/self.DELTA_T)
         end_point = int((epoch+1)*self.TRAJECTORY_LENGTH/self.DELTA_T)
@@ -23,21 +25,39 @@ class GP:
         delta_state_traj= cur_state_traj[:,1:]- cur_state_traj[:,:-1]
         x= np.concatenate((cur_state_traj[:,:-1],cur_action_traj[:,:-1]),axis=0)
         return x,delta_state_traj,cur_action_traj
-    def get_pce_kernel_fast(self,X, X_prime, Gp_number):
+    def get_pce_kernel_fast(self,X, X_prime, Gp_number,partial= False):
         K= np.zeros((X.shape[0],X_prime.shape[0]))
         sigma_f= self.kernel_scale_factors[Gp_number]
         l= self.kernel_length_scales[:, Gp_number];
         for iter1,i in enumerate(X):
-            K [iter1,:] = sigma_f*np.exp(-np.sum((i-X_prime)**2/(2*l**2),axis=1))
+            if not partial:
+                noise= sigma_f**2
+            else:
+                noise= 2*np.sqrt(sigma_f)
+            K [iter1,:] = noise * np.exp(-np.sum((i-X_prime)**2/(2*l**2),axis=1))
         #print(K.shape)
     
         return K
     def get_inv_val(self,train_x,train_y,func):
         inv_value = np.zeros((train_y.shape[1],train_x.shape[0],train_x.shape[0]))
+        K= np.zeros((train_x.shape[0],train_x.shape[0], train_y.shape[1]))
         for k in range(train_y.shape[1]):
-            inv_value[k,:] = np.linalg.inv(func(train_x,train_x,k)+ self.noise_sigmas[k]**2*np.eye(train_x.shape[0]))
+
+            K[:,:, k] = func(train_x, train_x, k)
+            inv_value[k,:] = np.linalg.inv(K[:,:,k]+ self.noise_sigmas[k]**2*np.eye(train_x.shape[0]))
+        self.inv_value= inv_value
+        self.K= K
         return inv_value
-    
+    def update_hyperparams(self,train_y):
+        for i in range(3):
+            l=1
+            #dkdth[i]=
+        for i in range(3): #because there are 3 parameters
+            for i in range(train_y.shape[1]):
+                log_liklihood= 0.5* np.matrix.trace(np.linalg.inv(self.K[:,:,i])@train_y[:,i]@ dkdth[i])
+                print('log_liklihood',log_liklihood.shape)
+                S= log_liklihood @ log_liklihood.T
+                print('s',S.shape)
     def predict_gp(self,train_x,train_y,init_state, action_traj,inv_val):
     
         output_dimension= train_y.shape[1]

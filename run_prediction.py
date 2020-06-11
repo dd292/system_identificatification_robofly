@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
 
     #choosing the prediction algorithm
-    prediction_algo = 'parametric'
+    prediction_algo = 'blackbox_GP'
     #prediction_algo = 'parametric_model'
     #prediction_algo = 'parametric_model_with_GP'
 #------------------for running  block box GP
@@ -74,6 +74,7 @@ if __name__ == '__main__':
             
             if epoch ==0:
                 mean_trajs,variance_traj,rollout_trajs= prediction_func(train_x.T, train_y.T, init_state, cur_action_traj.T, inv_val)
+                #GP_obj.update_hyperparams(train_y.T)
                 #plt.plot(mean_trajs)
                 #plt.show()
                 #sys.exit()
@@ -82,6 +83,7 @@ if __name__ == '__main__':
                 mean_trajs= np.concatenate((mean_trajs,mean),axis=0)
                 variance_traj= np.concatenate((variance_traj,variance),axis=0)
                 rollout_trajs= np.concatenate((rollout_trajs,rollout),axis=0)
+                #GP_obj.update_hyperparams(train_y.T)
     
 #-------------------for running parametric
     elif prediction_algo=='parametric':
