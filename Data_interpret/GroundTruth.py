@@ -3,6 +3,7 @@ from scipy.io import loadmat
 from scipy import signal
 from pathlib import Path
 import math
+import scipy.io as sio
 #from visualization import TrajectoryVisualize
 from scipy.misc import derivative
 import matplotlib.pyplot as plt
@@ -149,27 +150,40 @@ class ReadMat:
 
 
 if __name__ == '__main__':
-    
-    project_folder = Path( "E:/Dropbox/Daksh/System_ID_project/system_identificatification_robofly/")# windows path
+    # Loading DATA
+    project_folder = Path("E:/Dropbox/Daksh/System_ID_project/system_identificatification_robofly/")  # windows path
     data_folder = Path("Raw_data/8_8_2019 to 8_12_2019/")
-    file_to_open = project_folder / data_folder / "2019-08-08-19-16-02_5sec.mat"
-    object = ReadMat(file_to_open)
-    
-    
-    
-    sampling= 100
-    state_traj, action_traj= object.sampled_mocap_data(sampling)# state->[body_vel,body_angles,body_angular_velocities]
+    train_file = project_folder / data_folder / "2019-08-08-19-16-02_5sec.mat"
+    train_file2 = project_folder / data_folder / "2019-08-09-13-01-42_10sec.mat"
+    train_data = ReadMat(train_file)
+    train_data2 = ReadMat(train_file2)
+    # train_data = ReadMat(train_file2)
+
+    test_file = project_folder / data_folder / "2019-08-09-12-49-56_7sec.mat"
+    test_data = ReadMat(test_file)
+
+    # SAMPLING DATA
+    sample_size = 100  # sampling of raw data
+    train_state_traj, train_action_traj = train_data.sampled_mocap_data(sample_size)  # state X time, number of actions X time
+    train_state_traj2, train_action_traj2 = train_data2.sampled_mocap_data(sample_size)  # state X time, number of actions X time
+    test_state_traj, test_action_traj = test_data.sampled_mocap_data(sample_size)
+    sio.savemat('traj1.mat',{'states':train_state_traj,'actions': train_action_traj})
+    sio.savemat('traj2.mat', {'states': train_state_traj2, 'actions': train_action_traj2})
+    sio.savemat('traj3.mat', {'states': test_state_traj, 'actions': test_action_traj})
+
+    #sampling= 100
+    #state_traj, action_traj= object.sampled_mocap_data(sampling)# state->[body_vel,body_angles,body_angular_velocities]
     #
     #roll, pitch, yaw = object.angles()
     #xpos, ypos, zpos= object.positions()
     #xvel,yvel,zvel, omega1,omega2,omega3 = object.vel(xpos,ypos,zpos)
     #Z_param, roll_param, pitch_param= object.get_actions()
-    vis= TrajectoryVisualize()
+    #vis= TrajectoryVisualize()
     
-    vis.plotter({"pos": (state_traj[0,:],state_traj[1,:],state_traj[2,:]),"angles": (state_traj[3,:],state_traj[4,:],state_traj[5,:]),"vel": (state_traj[6,:],state_traj[7,:],state_traj[8,:])})
+    #vis.plotter({"pos": (state_traj[0,:],state_traj[1,:],state_traj[2,:]),"angles": (state_traj[3,:],state_traj[4,:],state_traj[5,:]),"vel": (state_traj[6,:],state_traj[7,:],state_traj[8,:])})
     # vis.plotter({"vel": (Z_param, roll_param, pitch_param)})
     #vis.plotter({"pos": (action_traj[0,:],action_traj[1,:],action_traj[2,:])})
-    vis.show_plot()
+    #vis.show_plot()
     # import matplotlib.pyplot as plt
     # fig,a =  plt.subplots(2,2)
 

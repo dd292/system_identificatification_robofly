@@ -10,7 +10,8 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 from Robofly_simulator.robot import Robot
-
+from sklearn.preprocessing import normalize
+import sys
 if __name__ == '__main__':
     
     #Define training paramters
@@ -56,6 +57,22 @@ if __name__ == '__main__':
     #prediction_algo = 'parametric_model_with_GP'
 #------------------for running  block box GP
     if prediction_algo=='blackbox_GP':
+        #print(train_x.shape)
+        # for i in range(12):
+        #     plt.figure()
+        #     plt.plot(train_x[i,:])
+        # #normalize data
+        #train_x= normalize(train_x.T)
+        #train_x=train_x.T
+        #print(train_x.shape)
+        # for i in range(12):
+        #     plt.figure()
+        #     plt.plot(train_x[i,:])
+        #plt.show()
+        #sys.exit()
+        #test_action_traj= normalize((test_action_traj.T))
+        #test_action_traj= test_action_traj.T
+        #----------------------------------------
         GP_obj= GP(DELTA_T,TRAJECTORY_LENGTH,NUM_TRAINING_EPOCHS)
         prediction_func= GP_obj.predict_gp
         #calculating inverse of kernel matrix
