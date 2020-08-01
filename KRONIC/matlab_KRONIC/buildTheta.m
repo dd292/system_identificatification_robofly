@@ -12,8 +12,8 @@ n = size(yin,1);
 
 ind = 1;
 % poly order 0
-yout(:,ind) = ones(n,1);
-ind = ind+1;
+% yout(:,ind) = ones(n,1);
+% ind = ind+1;
 
 % poly order 1
 for i=1:nVars

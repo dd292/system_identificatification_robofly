@@ -6,8 +6,8 @@ n = size(yin,1);
 
 ind = 1;
 % poly order 0
-yout(:,ind) = zeros(n,1);
-ind = ind+1;
+% yout(:,ind) = zeros(n,1);
+% ind = ind+1;
 
 % poly order 1
 for i=1:nVars

@@ -17,10 +17,18 @@ nvar = 2;
 
 [t,y] = ode45(f,tspan,x0,ode_options);
 
+% using fourth order central difference
+dy = zeros(length(y)-5,nvar);
+for i=3:length(y)-3
+    for k=1:nvar
+        dy(i-2,k) = (1/(12*dt))*(-y(i+2,k)+8*y(i+1,k)-8*y(i-1,k)+y(i-2,k));
+    end
+end
+y = y(3:end-3,1:nvar);
+t = t(3:end-3);
+
 Hy = zeros(length(y),1);
-dy = zeros(size(y));
 for k=1:length(y)
-    dy(k,:) = f(0,y(k,:))';
     Hy(k) = H(y(k,:));
 end
 
@@ -62,6 +70,19 @@ if length(Hy)~=length(t)
     t = 1:length(Hy);
 end
 
+normalized1 = (Theta)*(xi0)./norm((Theta)*(xi0));
+normalized2 = -(Theta*xi1)./norm(Theta*xi1);
+
+
+% figure()
+% plot(t,normalized2,'-b', 'LineWidth',8,'Color',[0,0,1])
+% title('Evolution')
+% ylim([0.01-1e-4 0.01+2e-4]), xlim([min(t) max(t)])
+% set(gca,'xtick',[0:2:10])
+% set(gca,'FontSize',16)
+% set(gcf,'Position',[100 100 260 200])
+% set(gcf,'PaperPositionMode','auto')
+
 figure; hold on, box on
 ph(1) = plot(t,Hy./norm(Hy),'-k', 'LineWidth',18,'Color',[0.7,0.7,0.7]);
 ph(2) = plot(t,(Theta)*(xi0)./norm((Theta)*(xi0)),'-b', 'LineWidth',8,'Color',[0,0,1]);
@@ -73,3 +94,27 @@ legend(ph,'True place', 'SVD place', 'LS place')
 set(gca,'FontSize',16)
 set(gcf,'Position',[100 100 260 200])
 set(gcf,'PaperPositionMode','auto')
+
+
+% % Plot error 
+dstep = 5;
+clear ph
+figure; hold on, box on
+tmp = Gamma*xi0;
+ph(1) = plot(t(1:dstep:end),tmp(1:dstep:end),'-k', 'LineWidth',2);%,'Color',[0,0,1]);
+tmp = -Gamma*xi1;
+ph(2) = plot(t(1:dstep:end),tmp(1:dstep:end),'-r', 'LineWidth',2);%,'Color',[0,0.5,0]);
+xlabel('t'), ylabel('Gamma xi')
+xlim([min(t) max(t)])
+%ylim([min(Gamma*xi1)+0.2*min(Gamma*xi1) max(Gamma*xi1)+0.5*max(Gamma*xi1)])
+legend(ph,'SVD p', 'LS  p')
+set(gca,'xtick',[0:2:10])
+set(gca,'FontSize',16)
+set(gcf,'Position',[100 100 225 200])
+set(gcf,'PaperPositionMode','auto')
+% 
+% err0 = (Hy./norm(Hy)-(Theta)*(xi0)./norm((Theta)*(xi0)))./(Hy./norm(Hy));
+% err1 = (Hy./norm(Hy)-(Theta)*(xi1)./norm((Theta)*(xi1)))./(Hy./norm(Hy));
+% figure, plot(err0,'-r'),hold on, plot(err1,'--b')
+% axis tight
+
