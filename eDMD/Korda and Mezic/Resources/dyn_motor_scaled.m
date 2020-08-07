@@ -19,3 +19,4 @@ end
 % [1] S. Daniel-Berhe and H. Unbehauen. Experimental physical parameter
 % estimation of a thyristor driven DC-motor using the HMF-method.
 % Control Engineering Practice, 6:615?626, 1998.
+
