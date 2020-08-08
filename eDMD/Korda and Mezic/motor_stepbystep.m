@@ -102,12 +102,13 @@ xstart = [Cy*x ; NaN(nD*(ny+m),1)];
 for i = 1:nD
     urand = 2*rand(m,1) - 1;
     xp = f_ud(0,x,urand);
-    xstart = [Cy*xp ; urand; xstart(1:end-ny-m)];
-    x = xp;
+    xstart = [Cy*xp ; urand; xstart(1:end-ny-m)]
+    x = xp
 end
 
 % Inital conditions
 x_true = xp;
+
 xlift = liftFun(xstart);
 
 % Simulation
